@@ -54,6 +54,9 @@ Permite que usuários cadastrem anúncios de carros com fotos, informações det
 
 <img width="2545" height="947" alt="image" src="https://github.com/user-attachments/assets/ff6034c2-46ba-4586-a979-d510159ea59b" />
 
+<img width="1360" height="470" alt="image" src="https://github.com/user-attachments/assets/c332acd2-bd53-4fd9-af9d-1d6bae8ee329" />
+
+
 ### 📱 Mobile
 
 <img width="766" height="943" alt="image" src="https://github.com/user-attachments/assets/4c2204d0-9163-41a9-a7fc-f6fa2d95f80c" />
