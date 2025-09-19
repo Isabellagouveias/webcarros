@@ -1,3 +1,13 @@
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import type { CarProps } from "../../interfaces/carProps";
+import { doc, getDoc } from "firebase/firestore";
+import { Container } from "../../components/container/Container";
+import { db } from "../../services/firebaseConnection";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination } from "swiper/modules";
+import { FaWhatsapp } from "react-icons/fa";
+
 export function CarDetail() {
   const { id } = useParams();
   const [car, setCar] = useState<CarProps>();
@@ -9,7 +19,6 @@ export function CarDetail() {
       if (!id) return;
 
       const docRef = doc(db, "cars", id);
-
       getDoc(docRef)
         .then((snapshot) => {
           if (!snapshot.exists()) {
@@ -17,20 +26,21 @@ export function CarDetail() {
             return;
           }
 
+          const data = snapshot.data();
           setCar({
             id: snapshot.id,
-            name: snapshot.data()?.name,
-            year: snapshot.data()?.year,
-            city: snapshot.data()?.city,
-            model: snapshot.data()?.model,
-            uid: snapshot.data()?.uid,
-            description: snapshot.data()?.description,
-            created: snapshot.data()?.created,
-            whatsapp: snapshot.data()?.whatsapp,
-            price: snapshot.data()?.price,
-            km: snapshot.data()?.km,
-            owner: snapshot.data()?.owner,
-            images: snapshot.data()?.images,
+            name: data?.name,
+            year: data?.year,
+            city: data?.city,
+            model: data?.model,
+            uid: data?.uid,
+            description: data?.description,
+            created: data?.created,
+            whatsapp: data?.whatsapp,
+            price: data?.price,
+            km: data?.km,
+            owner: data?.owner,
+            images: data?.images,
           });
         })
         .catch((error) => {
@@ -39,31 +49,34 @@ export function CarDetail() {
     }
 
     loadCar();
-  }, [id]);
+  }, [id, navigate]);
 
   useEffect(() => {
     function handleResize() {
       setSlidesPerView(window.innerWidth < 720 ? 1 : 2);
     }
-
     handleResize();
-
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // monta o link do WhatsApp (só quando tiver car)
-  const waLink = car
-    ? `https://wa.me/${car.whatsapp}?text=${encodeURIComponent(
+  const waLink =
+    car
+      ? `https://wa.me/${car.whatsapp}?text=${encodeURIComponent(
         `Olá, vi esse ${car.name} e fiquei interessado.`
       )}`
-    : "#";
+      : "#";
 
   return (
     <Container>
       {car && (
-        <Swiper slidesPerView={slidesPerView} pagination={{ clickable: true }} navigation>
-          {car.images.map((image) => (
+        <Swiper
+          slidesPerView={slidesPerView}
+          pagination={{ clickable: true }}
+          navigation
+          modules={[Navigation, Pagination]}
+        >
+          {(car.images ?? []).map((image) => (
             <SwiperSlide key={image.uid}>
               <img src={image.url} alt={image.name} className="w-full h-96 object-cover" />
             </SwiperSlide>
@@ -86,7 +99,6 @@ export function CarDetail() {
                 <p>Cidade</p>
                 <strong>{car.city}</strong>
               </div>
-
               <div>
                 <p>Ano</p>
                 <strong>{car.year}</strong>
